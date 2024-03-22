@@ -79,13 +79,29 @@ class IntegrationTests {
 				.body("year", equalTo(1994));
 	}
 	
+	/**
+	 * Checking content of list of people
+	 */
 	@Test
 	void retrieves_a_list_of_all_people() {
-		
+		given().when().get(baseURL + "/people").then().assertThat().statusCode(200).
+			
+			body("id", hasItems(1, 2, 3, 4, 5))
+			.body("name", hasItems("Tim Robbins", "Morgan Freeman", "Christopher Nolan", 
+					"Al Pacino", "Henry Fonda"))
+			.body("birth", hasItems(1958, 1937, 1970, 1940, 1905));
 	}
 	
+	/**
+	 * Checking content of single movie
+	 */
 	@Test
 	void retrieves_a_single_person_by_id() {
+given().when().get(baseURL + "/people/1").then().assertThat().statusCode(200).
+		
+		body("id", equalTo(1))
+		.body("name", equalTo("Tim Robbins"))
+		.body("birth", equalTo(1958));
 		
 	}
 
