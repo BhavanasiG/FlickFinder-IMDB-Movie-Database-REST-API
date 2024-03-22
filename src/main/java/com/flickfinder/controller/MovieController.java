@@ -77,6 +77,10 @@ public class MovieController {
 		}
 	}
 
+	/**
+	 * Returns the stars associated with a specific movie
+	 * @param ctx the Javalin Context
+	 */
 	public void getPeopleByMovieId(Context ctx) {
 		int id = Integer.parseInt(ctx.pathParam("id"));
 		try {
