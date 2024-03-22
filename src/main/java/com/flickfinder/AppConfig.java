@@ -56,7 +56,7 @@ public class AppConfig {
 		// app.get("/movies/ratings/{year}", movieController::getRatingsByYear);
 		app.get("/movies", movieController::getAllMovies);
 		app.get("/movies/{id}", movieController::getMovieById);
-		// app.get("/movies/{id}/stars", movieController::getPeopleByMovieId);
+		app.get("/movies/{id}/stars", movieController::getPeopleByMovieId);
 
 		 app.get("/people", personController::getAllPeople);
 		 app.get("/people/{id}", personController::getPersonById);

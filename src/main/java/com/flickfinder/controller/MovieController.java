@@ -77,4 +77,14 @@ public class MovieController {
 		}
 	}
 
+	public void getPeopleByMovieId(Context ctx) {
+		int id = Integer.parseInt(ctx.pathParam("id"));
+		try {
+			ctx.json(movieDAO.getStarsByMovieId(id));
+		} catch(SQLException e) {
+			ctx.status(500);
+			ctx.result("Database error");
+			e.printStackTrace();
+		}
+	}
 }

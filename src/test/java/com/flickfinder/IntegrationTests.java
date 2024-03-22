@@ -106,6 +106,18 @@ given().when().get(baseURL + "/people/1").then().assertThat().statusCode(200).
 	}
 
 	/**
+	 * Checking content of list of stars of a specified movie
+	 */
+	@Test
+	void retrieves_a_list_of_stars_of_movie_id() {
+		given().when().get(baseURL + "/movies/1/stars").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(1, 2))
+		.body("name", hasItems("Tim Robbins", "Morgan Freeman"))
+		.body("birth", hasItems(1958, 1937));
+	}
+	
+	/**
 	 * Tears down the application after each test.
 	 * We want to make sure that each test runs in isolation.
 	 */

@@ -121,4 +121,30 @@ class MovieControllerTest {
 		verify(ctx).status(404);
 	}
 
+	/**
+	 * Tests the getStarsByMovie
+	 */
+	@Test
+	void testGetStarsByMovieId() {
+		when(ctx.pathParam("id")).thenReturn("1");
+		movieController.getPeopleByMovieId(ctx);
+		try {
+			verify(movieDAO).getStarsByMovieId(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test a 500 status code is returned when a database error occurs.
+	 * 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetByMovieIdDatabaseError() throws SQLException {
+		when(ctx.pathParam("id")).thenReturn("1");
+		when(movieDAO.getStarsByMovieId(1)).thenThrow(new SQLException());
+		movieController.getPeopleByMovieId(ctx);
+		verify(ctx).status(500);
+	}
 }

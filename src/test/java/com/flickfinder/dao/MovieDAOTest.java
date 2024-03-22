@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.flickfinder.model.Movie;
+import com.flickfinder.model.Person;
 import com.flickfinder.util.Database;
 import com.flickfinder.util.Seeder;
 
@@ -97,6 +98,47 @@ class MovieDAOTest {
 			e.printStackTrace();
 		}
 
+	}
+	
+	/**
+	 * Tests the getStarsByMovieId method
+	 * We expect to get the list of stars in the movie specified by the movie id
+	 */
+	
+	@Test
+	void testGetPeopleByMovieId() {
+		try {
+			List<Person> people = movieDAO.getStarsByMovieId(1);
+			assertEquals (2, people.size());
+			
+			List<Person> people2 = movieDAO.getStarsByMovieId(2);
+			assertEquals (1, people2.size());
+			
+			List<Person> people3 = movieDAO.getStarsByMovieId(3);
+			assertEquals (1, people3.size());
+			
+			List<Person> people5 = movieDAO.getStarsByMovieId(5);
+			assertEquals (1, people5.size());
+			
+		} catch (SQLException e){
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * Test the getStarsByMovieId method with an invalid id.
+	 */
+	@Test
+	void testGetPeopleByInvalidMovieId() {
+		try {
+			List<Person> people = movieDAO.getStarsByMovieId(4);
+			assertEquals (0, people.size());
+		} catch (SQLException e) {
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
 	}
 
 	@AfterEach
