@@ -78,6 +78,16 @@ class IntegrationTests {
 				.body("title", equalTo("The Shawshank Redemption"))
 				.body("year", equalTo(1994));
 	}
+	
+	@Test
+	void retrieves_a_list_of_all_people() {
+		
+	}
+	
+	@Test
+	void retrieves_a_single_person_by_id() {
+		
+	}
 
 	/**
 	 * Tears down the application after each test.
