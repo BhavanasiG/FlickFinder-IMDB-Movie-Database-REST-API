@@ -21,20 +21,33 @@ class PersonControllerTest {
 
 	private Context ctx;
 	
+	/**
+	 * The person data access object
+	 */
 	private PersonDAO personDAO;
 	
+	/**
+	 * The person controller
+	 */
 	private PersonController personController;
 	
 	@BeforeEach
 	void setup() {
 		
+		// Create a mock of the person class
 		personDAO = mock(PersonDAO.class);
 		
+		// Create a mock of the Context class
 		ctx = mock(Context.class);
 		
+		// Create an instance if the PersonController class and pass the mock object
 		personController = new PersonController(personDAO);
 	}
 	
+	/**
+	 * Tests the getAllPeople method
+	 * Expect to get a list of all people in the database.
+	 */
 	@Test
 	void testGetAllPeople() {
 		personController.getAllPeople(ctx);
@@ -45,6 +58,11 @@ class PersonControllerTest {
 		}
 	}
 	
+	
+	/**
+	 * Test that the controller returns a 500 staus code when a database error occurs
+	 * @throws SQLException
+	 */
 	@Test
 	void testThrows500ExceptionWhenGetAllDatabaseError() throws SQLException{
 		when(personDAO.getAllPeople()).thenThrow(new SQLException());
@@ -52,6 +70,10 @@ class PersonControllerTest {
 		verify(ctx).status(500);
 	}
 	
+	/**
+	 * Test the getPersonById method
+	 * Expect to get the person specified by the unique identifier
+	 */
 	@Test
 	void testGetPersonById() {
 		when(ctx.pathParam("id")).thenReturn("1");
@@ -63,6 +85,10 @@ class PersonControllerTest {
 		}
 	}
 	
+	/**
+	 * Test a 500 status code is returned when a database error occurs.
+	 * @throws SQLException
+	 */
 	@Test
 	void testThrows500ExceptionWhenGetByIdDatabaseError() throws SQLException {
 		when(ctx.pathParam("id")).thenReturn("1");
@@ -71,6 +97,10 @@ class PersonControllerTest {
 		verify(ctx).status(500);
 	}
 	
+	/**
+	 * Test that the controller returns a 404 status code when a person is not found
+	 * @throws SQLException
+	 */
 	@Test
 	void testThrows404ExceptionWhenNoPersonFound() throws SQLException {
 		when(ctx.pathParam("id")).thenReturn("1");
