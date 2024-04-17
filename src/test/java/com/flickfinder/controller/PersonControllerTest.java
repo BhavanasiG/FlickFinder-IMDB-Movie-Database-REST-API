@@ -86,6 +86,33 @@ class PersonControllerTest {
 	}
 	
 	/**
+	 * Tests the getMoviesByPersonId
+	 */
+	@Test
+	void testGetMoviesByPersonId() {
+		when(ctx.pathParam("id")).thenReturn("1");
+		personController.getMoviesStarringPerson(ctx);
+		try {
+			verify(personDAO).getMoviesByPersonId(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test a 500 status code is returned when a database error occurs.
+	 * 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetByPersonIdDatabaseError() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("1");
+		when(personDAO.getMoviesByPersonId(1)).thenThrow(new SQLException());
+		personController.getMoviesStarringPerson(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
 	 * Test a 500 status code is returned when a database error occurs.
 	 * @throws SQLException
 	 */

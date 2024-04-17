@@ -51,7 +51,7 @@ public class PersonController {
 	}
 	
 	/**
-	 * Returns the movie with the specified id.
+	 * Returns the person with the specified id.
 	 * 
 	 * @param ctx
 	 */
@@ -67,6 +67,21 @@ public class PersonController {
 			}
 			ctx.json(personDAO.getPersonById(id));
 		} catch (SQLException e) {
+			ctx.status(500);
+			ctx.result("Database error");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Returns the movies associated with a specific star
+	 * @param ctx the Javalin Context
+	 */
+	public void getMoviesStarringPerson(Context ctx) {
+		int id = Integer.parseInt(ctx.pathParam("id"));
+		try {
+			ctx.json(personDAO.getMoviesByPersonId(id));
+		} catch(SQLException e) {
 			ctx.status(500);
 			ctx.result("Database error");
 			e.printStackTrace();
