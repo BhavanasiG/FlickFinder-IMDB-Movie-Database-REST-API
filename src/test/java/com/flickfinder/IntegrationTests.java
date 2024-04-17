@@ -118,6 +118,18 @@ given().when().get(baseURL + "/people/1").then().assertThat().statusCode(200).
 	}
 	
 	/**
+	 * Checking the content of the list of movies of a specified star
+	 */
+	@Test
+	void retrieves_a_list_of_movies_of_person_id() {
+		given().when().get(baseURL + "/people/4/movies").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(2, 3))
+		.body("title", hasItems("The Godfather", "The Godfather: Part II"))
+		.body("year", hasItems(1972, 1974));
+	}
+	
+	/**
 	 * Tears down the application after each test.
 	 * We want to make sure that each test runs in isolation.
 	 */
