@@ -53,7 +53,7 @@ public class AppConfig {
 		 * pattern matched in the order they are defined.
 		 * Only uncomment the routes for the functionality you have implemented.
 		 */
-		// app.get("/movies/ratings/{year}", movieController::getRatingsByYear);
+		app.get("/movies/ratings/{year}", movieController::getRatingsByYear);
 		app.get("/movies", movieController::getAllMovies);
 		app.get("/movies/{id}", movieController::getMovieById);
 		app.get("/movies/{id}/stars", movieController::getPeopleByMovieId);

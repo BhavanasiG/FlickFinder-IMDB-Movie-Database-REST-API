@@ -91,4 +91,19 @@ public class MovieController {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Returns the movie ratings for a given year
+	 * @param ctx the Javalin Context
+	 */
+	public void getRatingsByYear(Context ctx) {
+		int year = Integer.parseInt(ctx.pathParam("year"));
+		try {
+			ctx.json(movieDAO.getMovieRatingsByYear(year));
+		} catch(SQLException e) {
+			ctx.status(500);
+			ctx.result("Database error");
+			e.printStackTrace();
+		}
+	}
 }

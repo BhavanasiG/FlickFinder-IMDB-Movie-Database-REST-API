@@ -130,6 +130,20 @@ given().when().get(baseURL + "/people/1").then().assertThat().statusCode(200).
 	}
 	
 	/**
+	 * Checking the content of the list of movie ratings of a specified year
+	 */
+	@Test
+	void retrieves_a_list_of_movie_ratings_of_year() {
+		given().when().get(baseURL + "/movies/ratings/2008").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(4))
+		.body("title", hasItems("The Dark Knight"))
+		.body("rating", hasItems(8.8f))
+		.body("votes", hasItems(2000000))
+		.body("year", hasItems(2008));
+	}
+	
+	/**
 	 * Tears down the application after each test.
 	 * We want to make sure that each test runs in isolation.
 	 */

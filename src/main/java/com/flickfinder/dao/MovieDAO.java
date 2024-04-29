@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flickfinder.model.Movie;
+import com.flickfinder.model.MovieRating;
 import com.flickfinder.model.Person;
 import com.flickfinder.util.Database;
 
@@ -101,6 +102,29 @@ public class MovieDAO {
 		}
 		
 		return persons;
+	}
+	
+	
+	/**
+	 * Returns the movies of a specific year, with over 1000 votes and by descending order. The number of movies is limited to 50.
+	 * @param year The year from which the highest rated movies should be shown
+	 * @return the list of the top 50 rated movies from the year specified
+	 * @throws SQLException if a database error occurs
+	 */
+	public List<MovieRating> getMovieRatingsByYear(int year) throws SQLException{
+		List<MovieRating> movies = new ArrayList<>();
+		
+		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT 50";
+		PreparedStatement ps = connection.prepareStatement(statement);
+		ps.setInt(1, year);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
+		}
+		System.out.println(movies);
+		
+		return movies;
 	}
 
 }

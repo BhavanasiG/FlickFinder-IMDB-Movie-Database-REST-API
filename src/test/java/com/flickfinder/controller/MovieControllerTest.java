@@ -147,4 +147,31 @@ class MovieControllerTest {
 		movieController.getPeopleByMovieId(ctx);
 		verify(ctx).status(500);
 	}
+	
+	/**
+	 * Tests the getStartsByMovie
+	 */
+	@Test
+	void testGetMovieRatingsByYear() {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		movieController.getRatingsByYear(ctx);
+		try {
+			verify(movieDAO).getMovieRatingsByYear(1994);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test a 500 status code is returned when a database error occurs.
+	 * 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMovieRatingsByYearDatabaseError() throws SQLException {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(movieDAO.getMovieRatingsByYear(1994)).thenThrow(new SQLException());
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(500);
+	}
 }
