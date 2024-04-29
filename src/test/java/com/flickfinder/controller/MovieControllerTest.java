@@ -149,7 +149,7 @@ class MovieControllerTest {
 	}
 	
 	/**
-	 * Tests the getStartsByMovie
+	 * Tests the getMovieRatingsByYear
 	 */
 	@Test
 	void testGetMovieRatingsByYear() {
