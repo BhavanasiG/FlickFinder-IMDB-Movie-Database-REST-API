@@ -145,7 +145,7 @@ class PersonDAOTest {
 	@Test
 	void testGetAllPeopleByInvalidLimit() {
 		try {
-			List<Person> people = personDAO.getAllPeopleByLimit(7);
+			List<Person> people = personDAO.getAllPeopleByLimit(0);
 			assertEquals(0, people.size());
 		} catch (SQLException e) {
 			fail("SQLException thrown");
