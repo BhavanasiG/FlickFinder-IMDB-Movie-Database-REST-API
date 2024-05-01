@@ -41,12 +41,21 @@ public class MovieController {
 
 	/**
 	 * Returns a list of all movies in the database.
+	 * Limited to 50, if no limit is specified.
 	 * 
 	 * @param ctx the Javalin context
 	 */
 	public void getAllMovies(Context ctx) {
 		try {
-			ctx.json(movieDAO.getAllMovies());
+			String limit = ctx.queryParam("limit");
+			
+			if (limit != null) {
+				ctx.json(movieDAO.getAllMoviesByLimit(Integer.parseInt(limit)));
+			}
+			else {
+				ctx.json(movieDAO.getAllMovies());
+			}
+			
 		} catch (SQLException e) {
 			ctx.status(500);
 			ctx.result("Database error");
@@ -94,12 +103,27 @@ public class MovieController {
 	
 	/**
 	 * Returns the movie ratings for a given year
+	 * A limit on the number of votes and number of movies to be returned can be specified.
+	 *  Default value for votes is 1000 and default value for limit is 50
 	 * @param ctx the Javalin Context
 	 */
 	public void getRatingsByYear(Context ctx) {
 		int year = Integer.parseInt(ctx.pathParam("year"));
 		try {
-			ctx.json(movieDAO.getMovieRatingsByYear(year));
+			String limit = ctx.queryParam("limit");
+			String votes = ctx.queryParam("votes");
+			
+			if (limit != null & votes == null) {
+				ctx.json(movieDAO.getMovieRatingsByYearAndLimit(year, Integer.parseInt(limit)));
+				
+			} else if (votes != null & limit == null) {
+				ctx.json(movieDAO.getMovieRatingsByYearAndVoteLimit(year, Integer.parseInt(votes)));
+				
+			} else if (votes != null & limit != null){
+				ctx.json(movieDAO.getMovieRatingsByYearLimitVoteLimit(year, Integer.parseInt(limit), Integer.parseInt(votes)));
+			} else {
+				ctx.json(movieDAO.getMovieRatingsByYear(year));
+			}
 		} catch(SQLException e) {
 			ctx.status(500);
 			ctx.result("Database error");

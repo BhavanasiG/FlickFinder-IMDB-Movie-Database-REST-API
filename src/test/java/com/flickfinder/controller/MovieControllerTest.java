@@ -174,4 +174,142 @@ class MovieControllerTest {
 		movieController.getRatingsByYear(ctx);
 		verify(ctx).status(500);
 	}
+	
+	/**
+	 * Tests the getAllMovies, but also specifies a limit on the number of movies
+	 */
+	@Test
+	void testGetAllMoviesByLimit() {
+		when (ctx.queryParam("limit")).thenReturn("1");
+		movieController.getAllMovies(ctx);
+		try {
+			verify(movieDAO).getAllMoviesByLimit(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMoviesByLimitDatabaseError() throws SQLException{
+		when(ctx.queryParam("limit")).thenReturn("1");
+		when(movieDAO.getAllMoviesByLimit(1)).thenThrow(new SQLException());
+		movieController.getAllMovies(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
+	 * Tests the getAllMovies, but also specifies a limit on the number of movies
+	 */
+	@Test
+	void testGetAllMoviesByLimit2() {
+		when (ctx.queryParam("limit")).thenReturn("2");
+		movieController.getAllMovies(ctx);
+		try {
+			verify(movieDAO).getAllMoviesByLimit(2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMoviesByLimit2DatabaseError() throws SQLException{
+		when(ctx.queryParam("limit")).thenReturn("2");
+		when(movieDAO.getAllMoviesByLimit(2)).thenThrow(new SQLException());
+		movieController.getAllMovies(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
+	 * Tests the getAllMoviesRatings, but also specifies a limit on the number of movie ratings
+	 */
+	@Test
+	void testGetAllMovieRatingsByLimit1() {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("limit")).thenReturn("2");
+		movieController.getRatingsByYear(ctx);
+		try {
+			verify(movieDAO).getMovieRatingsByYearAndLimit(1994, 2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMovieRatingsByLimitDatabaseError() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("limit")).thenReturn("2");
+		when(movieDAO.getMovieRatingsByYearAndLimit(1994, 2)).thenThrow(new SQLException());
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
+	 * Tests the getAllMovieRatings, but also specifies a minimum votes
+	 */
+	@Test
+	void testGetAllMovieRatingsByVotes() {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("votes")).thenReturn("100");
+		movieController.getRatingsByYear(ctx);
+		try {
+			verify(movieDAO).getMovieRatingsByYearAndVoteLimit(1994, 100);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMovieRatingsByVoteLimitDatabaseError() throws SQLException {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("votes")).thenReturn("100");
+		when(movieDAO.getMovieRatingsByYearAndVoteLimit(1994, 100)).thenThrow(new SQLException());
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
+	 * Tests the getAllMovieRatings, but also specifies a limit on number of movies and minimum number of votes
+	 */
+	@Test
+	void testGetAllMovieRatingsByLimitAndVotes() {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("votes")).thenReturn("100");
+		when(ctx.queryParam("limit")).thenReturn("2");
+		movieController.getRatingsByYear(ctx);
+		try {
+			verify(movieDAO).getMovieRatingsByYearLimitVoteLimit(1994, 2, 100);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetMovieRatingsByLimitAndVoteLimitDatabaseError() throws SQLException {
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("votes")).thenReturn("100");
+		when(ctx.queryParam("limit")).thenReturn("2");
+		when(movieDAO.getMovieRatingsByYearLimitVoteLimit(1994, 2, 100)).thenThrow(new SQLException());
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(500);
+	}
 }

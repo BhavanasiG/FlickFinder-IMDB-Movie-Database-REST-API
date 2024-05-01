@@ -126,5 +126,96 @@ public class MovieDAO {
 		
 		return movies;
 	}
+	
+	/**
+	 * Returns the specified number of movies
+	 * @param limit the number of movies to be listed
+	 * @return a list of the specified number of movies
+	 * @throws SQLException
+	 */
+	public List<Movie> getAllMoviesByLimit(int limit) throws SQLException {
+		List<Movie> movies = new ArrayList<>();
+
+		Statement statement = connection.createStatement();
+		
+		
+		ResultSet rs = statement.executeQuery("select * from movies LIMIT " + limit);
+		
+		while (rs.next()) {
+			movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getInt("year")));
+		}
+
+		return movies;
+	}
+	
+	/**
+	 * Returns the specific number of ratings
+	 * @param year the year of release of movies
+	 * @param limit the number of movie ratings to be returned
+	 * @return a list of the specified number of movie ratings
+	 * @throws SQLException
+	 */
+	public List<MovieRating> getMovieRatingsByYearAndLimit(int year, int limit) throws SQLException{
+		List<MovieRating> movies = new ArrayList<>();
+		
+		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT " + limit;
+		PreparedStatement ps = connection.prepareStatement(statement);
+		ps.setInt(1, year);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
+		}
+		System.out.println(movies);
+		
+		return movies;
+	}
+	
+	/**
+	 * Returns the movies with more than the specified number of votes
+	 * @param year the year of release of movie
+	 * @param limit the number of votes the movie should have more than
+	 * @return a list of the number of movie ratings with more votes than the specified number of votes
+	 * @throws SQLException
+	 */
+	public List<MovieRating> getMovieRatingsByYearAndVoteLimit(int year, int limit) throws SQLException{
+		List<MovieRating> movies = new ArrayList<>();
+		
+		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + limit +" ORDER BY ratings.rating DESC LIMIT 50";
+		PreparedStatement ps = connection.prepareStatement(statement);
+		ps.setInt(1, year);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
+		}
+		System.out.println(movies);
+		
+		return movies;
+	}
+	
+	/**
+	 * Returns the specified number of movies with more than the specified number of votes
+	 * @param year The year of release of the movies
+	 * @param limit the number of movies to be returned
+	 * @param votes the number of votes the movie rating should have more than
+	 * @return a list containing the specified number of movie ratings contains more than the number of votes specified
+	 * @throws SQLException
+	 */
+	public List<MovieRating> getMovieRatingsByYearLimitVoteLimit(int year, int limit, int votes) throws SQLException{
+		List<MovieRating> movies = new ArrayList<>();
+		
+		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT " + limit;
+		PreparedStatement ps = connection.prepareStatement(statement);
+		ps.setInt(1, year);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
+		}
+		System.out.println(movies);
+		
+		return movies;
+	}
 
 }

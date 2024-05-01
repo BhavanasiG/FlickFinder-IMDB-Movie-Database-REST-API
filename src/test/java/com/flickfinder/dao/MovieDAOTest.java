@@ -182,6 +182,64 @@ class MovieDAOTest {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Test the getAllMoviesByLimit
+	 * We expect to get a list of movies of the specified length
+	 */
+	@Test
+	void testGetAllMoviesByLimit() {
+		try {
+			List<Movie> movies = movieDAO.getAllMoviesByLimit(1);
+			assertEquals(1, movies.size());
+			
+			List<Movie> movies2 = movieDAO.getAllMoviesByLimit(2);
+			assertEquals(2, movies2.size());
+			
+			List<Movie> movies3 = movieDAO.getAllMoviesByLimit(3);
+			assertEquals(3, movies3.size());
+			
+			List<Movie> movies4 = movieDAO.getAllMoviesByLimit(4);
+			assertEquals(4, movies4.size());
+			
+			List<Movie> movies5 = movieDAO.getAllMoviesByLimit(5);
+			assertEquals(5, movies5.size());
+		} catch (SQLException e) {
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test the getAllMoviesByLimit with an invalid limit
+	 */
+	@Test
+	void testGetAllMoviesByInvalidLimit() {
+		try {
+			List<Movie> movies = movieDAO.getAllMoviesByLimit(7);
+			assertEquals(0, movies.size());
+		} catch (SQLException e) {
+			fail("SQLexception thrown");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test the limit for get movie ratings
+	 */
+	@Test
+	void testGetAllMovieRatingsByLimit() {
+		try {
+			List<MovieRating> movies = movieDAO.getMovieRatingsByYearAndLimit(1994, 1);
+			assertEquals(1, movies.size());
+			
+			List<MovieRating> movie2 = movieDAO.getMovieRatingsByYearAndLimit(1994, 3);
+			assertEquals(3, movies.size());
+		} catch (SQLException e) {
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
+	}
 
 	@AfterEach
 	void tearDown() {

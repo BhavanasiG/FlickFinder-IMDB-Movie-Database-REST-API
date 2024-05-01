@@ -105,4 +105,24 @@ public class PersonDAO {
 		
 		return movies;
 	}
+	
+	/**
+	 * Returns the specified number of people
+	 * @param limit the number of people to be returned
+	 * @return a list of the specified number of people
+	 * @throws SQLException
+	 */
+	public List<Person> getAllPeopleByLimit(int limit) throws SQLException{
+		List<Person> people = new ArrayList<>();
+		
+		Statement statement = connection.createStatement();
+		
+		ResultSet rs = statement.executeQuery("select * from people LIMIT " + limit);
+		
+		while (rs.next()) {
+			people.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getInt("birth")));
+		}
+		
+		return people;
+	}
 }

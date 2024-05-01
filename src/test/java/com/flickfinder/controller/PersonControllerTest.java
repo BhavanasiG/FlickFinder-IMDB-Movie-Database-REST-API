@@ -125,6 +125,58 @@ class PersonControllerTest {
 	}
 	
 	/**
+	 * Tests the getAllPeople, but also specifies a limit on the number of people to be returned
+	 */
+	@Test
+	void testGetAllPeopleByLimit() {
+		when(ctx.queryParam("limit")).thenReturn("1");
+		personController.getAllPeople(ctx);
+		try {
+			verify(personDAO).getAllPeopleByLimit(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetPeopleByLimitDatabaseError() throws SQLException{
+		when(ctx.queryParam("limit")).thenReturn("1");
+		when(personDAO.getAllPeopleByLimit(1)).thenThrow(new SQLException());
+		personController.getAllPeople(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
+	 * Tests the getAllPeople, but also specifies a limit on the number of people to be returned
+	 */
+	@Test
+	void testGetAllPeopleByLimit2() {
+		when(ctx.queryParam("limit")).thenReturn("2");
+		personController.getAllPeople(ctx);
+		try {
+			verify(personDAO).getAllPeopleByLimit(2);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests a 500 status code is shown when a database error occurs
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows500ExceptionWhenGetPeopleByLimitDatabaseError2() throws SQLException{
+		when(ctx.queryParam("limit")).thenReturn("2");
+		when(personDAO.getAllPeopleByLimit(2)).thenThrow(new SQLException());
+		personController.getAllPeople(ctx);
+		verify(ctx).status(500);
+	}
+	
+	/**
 	 * Test that the controller returns a 404 status code when a person is not found
 	 * @throws SQLException
 	 */

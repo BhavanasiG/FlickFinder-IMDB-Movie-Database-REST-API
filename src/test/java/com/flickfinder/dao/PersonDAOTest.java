@@ -112,6 +112,47 @@ class PersonDAOTest {
 		}
 	}
 	
+	/**
+	 * Test the getAllPeopleByLimit()
+	 * We expect to get a list of people of the specified length
+	 */
+	@Test
+	void testGetAllPeopleByLimit() {
+		try {
+			List<Person> people = personDAO.getAllPeopleByLimit(1);
+			assertEquals(1, people.size());
+			
+			List<Person> people2 = personDAO.getAllPeopleByLimit(2);
+			assertEquals(2, people2.size());
+			
+			List<Person> people3 = personDAO.getAllPeopleByLimit(3);
+			assertEquals(3, people3.size());
+			
+			List<Person> people4 = personDAO.getAllPeopleByLimit(4);
+			assertEquals(4, people4.size());
+			
+			List<Person> people5 = personDAO.getAllPeopleByLimit(5);
+			assertEquals(5, people5.size());
+		} catch (SQLException e) {
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Test the getAllPeopleByLimit by an invalid limit
+	 */
+	@Test
+	void testGetAllPeopleByInvalidLimit() {
+		try {
+			List<Person> people = personDAO.getAllPeopleByLimit(7);
+			assertEquals(0, people.size());
+		} catch (SQLException e) {
+			fail("SQLException thrown");
+			e.printStackTrace();
+		}
+	}
+	
 	@AfterEach
 	void tearDown() {
 		seeder.closeConnection();

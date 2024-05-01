@@ -36,13 +36,22 @@ public class PersonController {
 	
 	/**
 	 * Returns a list of people in the database.
+	 * Limited to 50, if no limit is specified.
 	 * 
 	 * @param ctx
 	 */
 	
 	public void getAllPeople(Context ctx) {
 		try {
-			ctx.json(personDAO.getAllPeople());
+			String limit = ctx.queryParam("limit");
+			
+			if (limit != null) {
+				ctx.json(personDAO.getAllPeopleByLimit(Integer.parseInt(limit)));
+			} 
+			else {
+				ctx.json(personDAO.getAllPeople());
+			}
+			
 		} catch (SQLException e) {
 			ctx.status(500);
 			ctx.result("Database error");
