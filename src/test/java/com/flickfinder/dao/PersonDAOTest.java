@@ -67,6 +67,12 @@ class PersonDAOTest {
 		try {
 			Person person = personDAO.getPersonById(1000);
 			assertEquals(null, person);
+			
+			Person person2 = personDAO.getPersonById(0);
+			assertEquals(null, person2);
+			
+			Person person3 = personDAO.getPersonById(-5);
+			assertEquals(null, person3);
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();
@@ -105,7 +111,14 @@ class PersonDAOTest {
 	void testGetMoviesByInvalidPersonId() {
 		try {
 			List<Movie> movies = personDAO.getMoviesByPersonId(3);
-			assertEquals (0, movies.size());
+			assertEquals (null, movies);
+			
+			List<Movie> movies2 = personDAO.getMoviesByPersonId(-5);
+			assertEquals (null, movies2);
+			
+			List<Movie> movies3 = personDAO.getMoviesByPersonId(0);
+			assertEquals (null, movies3);
+			
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();
@@ -145,8 +158,11 @@ class PersonDAOTest {
 	@Test
 	void testGetAllPeopleByInvalidLimit() {
 		try {
-			List<Person> people = personDAO.getAllPeopleByLimit(0);
-			assertEquals(0, people.size());
+			List<Person> people = personDAO.getAllPeopleByLimit(-1);
+			assertEquals(5, people.size());
+			
+			List<Person> people2 = personDAO.getAllPeopleByLimit(0);
+			assertEquals(5, people2.size());
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();

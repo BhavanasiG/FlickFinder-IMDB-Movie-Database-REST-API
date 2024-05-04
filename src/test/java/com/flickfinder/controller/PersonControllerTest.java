@@ -5,11 +5,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.flickfinder.dao.PersonDAO;
+import com.flickfinder.model.Movie;
 
 import io.javalin.http.Context;
 
@@ -60,7 +62,7 @@ class PersonControllerTest {
 	
 	
 	/**
-	 * Test that the controller returns a 500 staus code when a database error occurs
+	 * Test that the controller returns a 500 status code when a database error occurs
 	 * @throws SQLException
 	 */
 	@Test
@@ -125,6 +127,41 @@ class PersonControllerTest {
 	}
 	
 	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidPersonId() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("0");
+		personController.getPersonById(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test that the controller returns a 404 status code when a person is not found
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenNoPersonFound() throws SQLException {
+		when(ctx.pathParam("id")).thenReturn("1");
+		when(personDAO.getPersonById(1)).thenReturn(null);
+		personController.getPersonById(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
+	 * Test that the controller returns a 404 status code when a movie is not found.
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenNoMovieFound() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("1");
+		when(personDAO.getMoviesByPersonId(1)).thenReturn(null);
+		personController.getMoviesStarringPerson(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
 	 * Tests the getAllPeople, but also specifies a limit on the number of people to be returned
 	 */
 	@Test
@@ -176,15 +213,5 @@ class PersonControllerTest {
 		verify(ctx).status(500);
 	}
 	
-	/**
-	 * Test that the controller returns a 404 status code when a person is not found
-	 * @throws SQLException
-	 */
-	@Test
-	void testThrows404ExceptionWhenNoPersonFound() throws SQLException {
-		when(ctx.pathParam("id")).thenReturn("1");
-		when(personDAO.getPersonById(1)).thenReturn(null);
-		personController.getPersonById(ctx);
-		verify(ctx).status(404);
-	}
+	
 }

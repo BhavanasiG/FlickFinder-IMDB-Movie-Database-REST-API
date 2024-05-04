@@ -94,16 +94,22 @@ public class PersonDAO {
 	public List<Movie> getMoviesByPersonId(int id) throws SQLException{
 		List<Movie> movies = new ArrayList<>();
 		
-		String statement = "select * from movies inner join stars on movies.id=stars.movie_id where stars.person_id = ?";
+		String statement = "select * from movies inner join stars on movies.id=stars.movie_id where stars.person_id = ? LIMIT 50";
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
+		
 		
 		while (rs.next()) {
 			movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getInt("year")));
 		}
 		
-		return movies;
+		if (movies.size() > 0) {
+			return movies;
+		} else {
+			return null;
+		}
+		
 	}
 	
 	/**
@@ -114,6 +120,9 @@ public class PersonDAO {
 	 */
 	public List<Person> getAllPeopleByLimit(int limit) throws SQLException{
 		List<Person> people = new ArrayList<>();
+		if (limit < 1) {
+			limit = 50;
+		}
 		
 		Statement statement = connection.createStatement();
 		

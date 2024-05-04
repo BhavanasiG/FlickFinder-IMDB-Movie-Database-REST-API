@@ -100,8 +100,12 @@ public class MovieDAO {
 		while (rs.next()) {
 			persons.add(new Person(rs.getInt("id"), rs.getString("name"), rs.getInt("birth")));
 		}
+		if (persons.size()>0) {
+			return persons;
+		} else {
+			return null;
+		}
 		
-		return persons;
 	}
 	
 	
@@ -122,7 +126,7 @@ public class MovieDAO {
 		while (rs.next()) {
 			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
 		}
-		System.out.println(movies);
+		//System.out.println(movies);
 		
 		return movies;
 	}
@@ -135,6 +139,10 @@ public class MovieDAO {
 	 */
 	public List<Movie> getAllMoviesByLimit(int limit) throws SQLException {
 		List<Movie> movies = new ArrayList<>();
+		
+		if (limit < 1) {
+			limit = 50;
+		}
 
 		Statement statement = connection.createStatement();
 		
@@ -158,6 +166,10 @@ public class MovieDAO {
 	public List<MovieRating> getMovieRatingsByYearAndLimit(int year, int limit) throws SQLException{
 		List<MovieRating> movies = new ArrayList<>();
 		
+		if (limit < 1) {
+			limit = 50;
+		}
+		
 		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT " + limit;
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
@@ -166,7 +178,7 @@ public class MovieDAO {
 		while (rs.next()) {
 			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
 		}
-		System.out.println(movies);
+		//System.out.println(movies);
 		
 		return movies;
 	}
@@ -181,6 +193,10 @@ public class MovieDAO {
 	public List<MovieRating> getMovieRatingsByYearAndVoteLimit(int year, int limit) throws SQLException{
 		List<MovieRating> movies = new ArrayList<>();
 		
+		if (limit < 0) { //someone might want to see list of movie with any number of votes
+			limit = 1000;
+		}
+		
 		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + limit +" ORDER BY ratings.rating DESC LIMIT 50";
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
@@ -189,13 +205,18 @@ public class MovieDAO {
 		while (rs.next()) {
 			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
 		}
-		System.out.println(movies);
+		//System.out.println(movies);
+		if (movies.size() > 0) {
+			return movies;
+		} else {
+			return null;
+		}
 		
-		return movies;
 	}
 	
 	/**
-	 * Returns the specified number of movies with more than the specified number of votes
+	 * Returns the specified number of movies with more than the specified number of votes.
+	 * If limit or votes are invalid numbers, then they will set to default values.
 	 * @param year The year of release of the movies
 	 * @param limit the number of movies to be returned
 	 * @param votes the number of votes the movie rating should have more than
@@ -205,6 +226,13 @@ public class MovieDAO {
 	public List<MovieRating> getMovieRatingsByYearLimitVoteLimit(int year, int limit, int votes) throws SQLException{
 		List<MovieRating> movies = new ArrayList<>();
 		
+		if (limit < 1) {
+			limit = 50;
+		}
+		if (votes < 0) {
+			votes = 1000;
+		}
+		
 		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT " + limit;
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
@@ -213,9 +241,13 @@ public class MovieDAO {
 		while (rs.next()) {
 			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
 		}
-		System.out.println(movies);
+		//System.out.println(movies);
+		if (movies.size() > 0) {
+			return movies;
+		} else {
+			return null;
+		}
 		
-		return movies;
 	}
 
 }

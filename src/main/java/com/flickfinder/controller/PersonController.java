@@ -1,8 +1,10 @@
 package com.flickfinder.controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import com.flickfinder.dao.PersonDAO;
+import com.flickfinder.model.Movie;
 import com.flickfinder.model.Person;
 
 import io.javalin.http.Context;
@@ -36,7 +38,7 @@ public class PersonController {
 	
 	/**
 	 * Returns a list of people in the database.
-	 * Limited to 50, if no limit is specified.
+	 * Limited to 50, if no limit is specified, or an invalid limit.
 	 * 
 	 * @param ctx
 	 */
@@ -46,7 +48,12 @@ public class PersonController {
 			String limit = ctx.queryParam("limit");
 			
 			if (limit != null) {
-				ctx.json(personDAO.getAllPeopleByLimit(Integer.parseInt(limit)));
+				if (limit.matches("[0-9]+")) {
+					ctx.json(personDAO.getAllPeopleByLimit(Integer.parseInt(limit)));
+				} else {
+					ctx.json(personDAO.getAllPeople());
+				}
+				
 			} 
 			else {
 				ctx.json(personDAO.getAllPeople());
@@ -66,6 +73,12 @@ public class PersonController {
 	 */
 	
 	public void getPersonById(Context ctx) {
+		if (!ctx.pathParam("id").matches("[0-9]+") | Integer.parseInt(ctx.pathParam("id"))<1) {
+			ctx.status(400);
+			ctx.result("Invalid id");
+			return;
+		}
+		
 		int id = Integer.parseInt(ctx.pathParam("id"));
 		try {
 			Person person = personDAO.getPersonById(id);
@@ -87,9 +100,21 @@ public class PersonController {
 	 * @param ctx the Javalin Context
 	 */
 	public void getMoviesStarringPerson(Context ctx) {
+		if (!ctx.pathParam("id").matches("[0-9]+") | Integer.parseInt(ctx.pathParam("id"))<1) {
+			ctx.status(400);
+			ctx.result("Invalid id");
+			return;
+		}
 		int id = Integer.parseInt(ctx.pathParam("id"));
 		try {
-			ctx.json(personDAO.getMoviesByPersonId(id));
+			List<Movie> movies = personDAO.getMoviesByPersonId(id);
+			if (movies == null) {
+				ctx.status(404);
+				ctx.result("Movie(s) not found");
+				return;
+			} else {
+				ctx.json(movies);
+			}
 		} catch(SQLException e) {
 			ctx.status(500);
 			ctx.result("Database error");

@@ -144,6 +144,87 @@ given().when().get(baseURL + "/people/1").then().assertThat().statusCode(200).
 	}
 	
 	/**
+	 * Checking the content of the list of people with a limit specified.
+	 */
+	@Test
+	void retrieves_a_list_of_people_with_limit() {
+		given().when().get(baseURL + "/people?limit=3").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(1, 2, 3))
+		.body("name", hasItems("Tim Robbins", "Morgan Freeman", "Christopher Nolan"))
+		.body("birth", hasItems(1958, 1937, 1970));
+	}
+	
+	/**
+	 * Checking the content of the list of movies with a limit specified.
+	 */
+	@Test
+	void retrieves_a_list_of_movies_with_limit() {
+		given().when().get(baseURL + "/movies?limit=3").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(1, 2, 3))
+		.body("title", hasItems("The Shawshank Redemption", "The Godfather", "The Godfather: Part II"))
+		.body("year", hasItems(1994, 1972, 1974));
+	}
+	
+	/**
+	 * Checking the content of the list of ratings of a specific year with a minimum votes specified.
+	 */
+	@Test
+	void retrieves_a_list_of_ratings_with_vote_query() {
+		given().when().get(baseURL + "/movies/ratings/2008?votes=1000000").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(4))
+		.body("title", hasItems("The Dark Knight"))
+		.body("rating", hasItems(8.8f))
+		.body("votes", hasItems(2000000))
+		.body("year", hasItems(2008));
+	}
+	
+	/**
+	 * Checking the content of the list of rating of a specific year with a limit specified.
+	 */
+	@Test
+	void retrieves_a_list_of_ratings_with_limit_query() {// limit specified is 3, but the seeder database has only 1 entry for 2008
+														// so should only return one record.
+		given().when().get(baseURL + "/movies/ratings/2008?limit=3").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(4))
+		.body("title", hasItems("The Dark Knight"))
+		.body("rating", hasItems(8.8f))
+		.body("votes", hasItems(2000000))
+		.body("year", hasItems(2008));
+	}
+	
+	/**
+	 * Checking the content of the list of ratings with a specific year with limit and minimum votes specified.
+	 */
+	@Test
+	void retrieves_a_list_of_ratings_with_limit_and_vote_query() {
+		given().when().get(baseURL + "/movies/ratings/2008?limit=3&votes=1000000").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(4))
+		.body("title", hasItems("The Dark Knight"))
+		.body("rating", hasItems(8.8f))
+		.body("votes", hasItems(2000000))
+		.body("year", hasItems(2008));
+	}
+	
+	/**
+	 * Checking the content of the list of ratings with a specific year with minimum votes and limit specified.
+	 */
+	@Test
+	void retrieves_a_list_of_ratings_with_vote_and_limit_query() { // checking result is same, even if queries are swapped around in URL
+		given().when().get(baseURL + "/movies/ratings/2008?votes=1000000&limit=3").then().assertThat().statusCode(200).
+		
+		body("id", hasItems(4))
+		.body("title", hasItems("The Dark Knight"))
+		.body("rating", hasItems(8.8f))
+		.body("votes", hasItems(2000000))
+		.body("year", hasItems(2008));
+	}
+	
+	/**
 	 * Tears down the application after each test.
 	 * We want to make sure that each test runs in isolation.
 	 */
