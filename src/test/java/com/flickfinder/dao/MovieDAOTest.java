@@ -190,7 +190,7 @@ class MovieDAOTest {
 	void testGetMovieRatingsByInvalidYear() {
 		try {
 			List<MovieRating> movies = movieDAO.getMovieRatingsByYear(2028);
-			assertEquals(0, movies.size());
+			assertEquals(null, movies);
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();
@@ -265,10 +265,10 @@ class MovieDAOTest {
 			assertEquals(1, movies.size());
 			
 			List<MovieRating> movies2 = movieDAO.getMovieRatingsByYearAndLimit(2028, 2);
-			assertEquals(0, movies2.size());
+			assertEquals(null, movies2);
 			
 			List<MovieRating> movies3 = movieDAO.getMovieRatingsByYearAndLimit(2028, -1);
-			assertEquals(0, movies3.size());
+			assertEquals(null, movies3);
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();
@@ -345,6 +345,16 @@ class MovieDAOTest {
 			
 			List<MovieRating> movies3 = movieDAO.getMovieRatingsByYearLimitVoteLimit(1972, 0, 2000000);
 			assertEquals(null, movies3);
+			
+			List<MovieRating> movies4 = movieDAO.getMovieRatingsByYearLimitVoteLimit(2028, 2, 1000000);
+			assertEquals(null, movies4);
+			
+			List<MovieRating> movies5 = movieDAO.getMovieRatingsByYearLimitVoteLimit(2028, -5, 1000000);
+			assertEquals(null, movies5);
+			
+			List<MovieRating> movies6 = movieDAO.getMovieRatingsByYearLimitVoteLimit(2028, 0, 2000000);
+			assertEquals(null, movies6);
+			
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();

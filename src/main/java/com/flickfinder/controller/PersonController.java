@@ -73,7 +73,8 @@ public class PersonController {
 	 */
 	
 	public void getPersonById(Context ctx) {
-		if (!ctx.pathParam("id").matches("[0-9]+") | Integer.parseInt(ctx.pathParam("id"))<1) {
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("id"))>=1);
+		if (!valid) {
 			ctx.status(400);
 			ctx.result("Invalid id");
 			return;
@@ -100,7 +101,8 @@ public class PersonController {
 	 * @param ctx the Javalin Context
 	 */
 	public void getMoviesStarringPerson(Context ctx) {
-		if (!ctx.pathParam("id").matches("[0-9]+") | Integer.parseInt(ctx.pathParam("id"))<1) {
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("id"))>=1);
+		if (!valid) {
 			ctx.status(400);
 			ctx.result("Invalid id");
 			return;

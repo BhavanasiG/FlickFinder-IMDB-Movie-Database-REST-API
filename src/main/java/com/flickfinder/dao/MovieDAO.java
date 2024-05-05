@@ -128,7 +128,11 @@ public class MovieDAO {
 		}
 		//System.out.println(movies);
 		
-		return movies;
+		if (movies.size() > 0) {
+			return movies;
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -179,8 +183,11 @@ public class MovieDAO {
 			movies.add(new MovieRating(rs.getInt("id"), rs.getString("title"), rs.getFloat("rating"), rs.getInt("votes"), rs.getInt("year")));
 		}
 		//System.out.println(movies);
-		
-		return movies;
+		if (movies.size() > 0) {
+			return movies;
+		} else {
+			return null;
+		}
 	}
 	
 	/**

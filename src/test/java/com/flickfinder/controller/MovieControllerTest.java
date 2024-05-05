@@ -131,6 +131,17 @@ class MovieControllerTest {
 		movieController.getMovieById(ctx);
 		verify(ctx).status(400);
 	}
+	
+	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidMovieId2() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("abc");
+		movieController.getMovieById(ctx);
+		verify(ctx).status(400);
+	}
 
 	/**
 	 * Tests the getStarsByMovie
@@ -221,6 +232,29 @@ class MovieControllerTest {
 	}
 	
 	/**
+	 * Test a 400 status code is returned if invalid year.
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenGetMovieRatingsByInvalidYear3() throws SQLException {
+		when(ctx.pathParam("year")).thenReturn("abc");
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test a 404 status code is returned if no movie ratings are found
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenNoMovieRatingsFound() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("9");
+		when(movieDAO.getMovieRatingsByYear(9)).thenReturn(null);
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
 	 * Tests the getAllMovies, but also specifies a limit on the number of movies
 	 */
 	@Test
@@ -301,6 +335,19 @@ class MovieControllerTest {
 	}
 	
 	/**
+	 * Test a 404 status code is returned if no movie ratings are found
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenNoMovieRatingsFoundWithLimit() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("9");
+		when(ctx.queryParam("limit")).thenReturn("2");
+		when(movieDAO.getMovieRatingsByYearAndLimit(9, 2)).thenReturn(null);
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
 	 * Tests the getAllMovieRatings, but also specifies a minimum votes
 	 */
 	@Test
@@ -337,6 +384,19 @@ class MovieControllerTest {
 		when(ctx.pathParam("year")).thenReturn("1994");
 		when(ctx.queryParam("votes")).thenReturn("1000000");
 		when(movieDAO.getMovieRatingsByYearAndVoteLimit(1994,1000000)).thenReturn(null);
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
+	 * Test a 404 status code is returned if no movie ratings are found
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenNoMovieRatingsFoundWithInvalidYearAndValidVotes() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("9");
+		when(ctx.queryParam("votes")).thenReturn("1000");
+		when(movieDAO.getMovieRatingsByYearAndVoteLimit(9, 1000)).thenReturn(null);
 		movieController.getRatingsByYear(ctx);
 		verify(ctx).status(404);
 	}
@@ -381,6 +441,20 @@ class MovieControllerTest {
 		when(ctx.queryParam("votes")).thenReturn("10000000");
 		when(ctx.queryParam("limit")).thenReturn("2");
 		when(movieDAO.getMovieRatingsByYearLimitVoteLimit(1994, 2, 10000000)).thenReturn(null);
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(404);
+	}
+	
+	/**
+	 * Test that the controller returns a 404 status code when no movie/movie rating is found
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows404ExceptionWhenGetMovieRatingsByLimitAndVoteLimitByTooHighVotes2() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("1994");
+		when(ctx.queryParam("votes")).thenReturn("10000000");
+		when(ctx.queryParam("limit")).thenReturn("-2");
+		when(movieDAO.getMovieRatingsByYearAndVoteLimit(1994, 10000000)).thenReturn(null);
 		movieController.getRatingsByYear(ctx);
 		verify(ctx).status(404);
 	}
