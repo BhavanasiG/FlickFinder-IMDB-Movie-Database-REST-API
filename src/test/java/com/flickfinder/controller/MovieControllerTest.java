@@ -210,14 +210,15 @@ class MovieControllerTest {
 	}
 	
 	/**
-	 * Test a 400 status code is returned if invalid year.
+	 * Test a 404 status code is returned if invalid year.
 	 * @throws SQLException
 	 */
 	@Test
-	void testThrows400ExceptionWhenGetMovieRatingsByInvalidYear() throws SQLException {
+	void testThrows404ExceptionWhenGetMovieRatingsByInvalidYear() throws SQLException {
 		when(ctx.pathParam("year")).thenReturn("2028");
+		when(movieDAO.getMovieRatingsByYear(2028)).thenReturn(null);
 		movieController.getRatingsByYear(ctx);
-		verify(ctx).status(400);
+		verify(ctx).status(404);
 	}
 	
 	/**

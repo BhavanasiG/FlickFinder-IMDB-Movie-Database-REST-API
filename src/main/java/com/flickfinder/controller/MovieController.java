@@ -136,7 +136,7 @@ public class MovieController {
 	 */
 	public void getRatingsByYear(Context ctx) {
 		//System.out.println("Param: " + ctx.pathParam("year"));
-		boolean validYear = ctx.pathParam("year").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("year")) <= 2024;
+		boolean validYear = ctx.pathParam("year").matches("[0-9]+") && (Integer.parseInt(ctx.pathParam("year")) > 0);
 		
 		if(!ctx.pathParam("year").matches("[0-9]+") | validYear == false) {
 			ctx.status(400);
