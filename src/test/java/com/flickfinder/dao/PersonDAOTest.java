@@ -163,6 +163,9 @@ class PersonDAOTest {
 			
 			List<Person> people2 = personDAO.getAllPeopleByLimit(0);
 			assertEquals(5, people2.size());
+			
+			List<Person> people3 = personDAO.getAllPeopleByLimit(2147483647);
+			assertEquals(5, people3.size());
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();

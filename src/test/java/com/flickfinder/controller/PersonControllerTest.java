@@ -138,6 +138,39 @@ class PersonControllerTest {
 	}
 	
 	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidPersonId2() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("abc");
+		personController.getPersonById(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidPersonId3() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("-9");
+		personController.getPersonById(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidPersonId4() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("12345678900");
+		personController.getPersonById(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
 	 * Test that the controller returns a 404 status code when a person is not found
 	 * @throws SQLException
 	 */

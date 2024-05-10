@@ -48,15 +48,18 @@ public class PersonController {
 			String limit = ctx.queryParam("limit");
 			
 			if (limit != null) {
-				if (limit.matches("[0-9]+")) {
+				if ((limit.matches("[0-9]+")) && (limit.length()<10)) {
 					ctx.json(personDAO.getAllPeopleByLimit(Integer.parseInt(limit)));
-				} else {
+					return;
+				}  {
 					ctx.json(personDAO.getAllPeople());
+					return;
 				}
 				
 			} 
-			else {
+			 {
 				ctx.json(personDAO.getAllPeople());
+				return;
 			}
 			
 		} catch (SQLException e) {
@@ -73,7 +76,7 @@ public class PersonController {
 	 */
 	
 	public void getPersonById(Context ctx) {
-		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("id"))>=1);
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && ctx.pathParam("id").length()<10 && Integer.parseInt(ctx.pathParam("id"))>=1);
 		if (!valid) {
 			ctx.status(400);
 			ctx.result("Invalid id");
@@ -101,7 +104,7 @@ public class PersonController {
 	 * @param ctx the Javalin Context
 	 */
 	public void getMoviesStarringPerson(Context ctx) {
-		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("id"))>=1);
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && ctx.pathParam("id").length()<10 && Integer.parseInt(ctx.pathParam("id"))>=1);
 		if (!valid) {
 			ctx.status(400);
 			ctx.result("Invalid id");
@@ -114,8 +117,9 @@ public class PersonController {
 				ctx.status(404);
 				ctx.result("Movie(s) not found");
 				return;
-			} else {
+			}  {
 				ctx.json(movies);
+				return;
 			}
 		} catch(SQLException e) {
 			ctx.status(500);

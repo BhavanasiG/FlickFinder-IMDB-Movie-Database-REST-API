@@ -142,6 +142,17 @@ class MovieControllerTest {
 		movieController.getMovieById(ctx);
 		verify(ctx).status(400);
 	}
+	
+	/**
+	 * Test a 400 status code is returned for invalid id parameter
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenInvalidMovieId3() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("123456789000");
+		movieController.getMovieById(ctx);
+		verify(ctx).status(400);
+	}
 
 	/**
 	 * Tests the getStarsByMovie
@@ -180,6 +191,39 @@ class MovieControllerTest {
 		when(movieDAO.getStarsByMovieId(1)).thenReturn(null);
 		movieController.getPeopleByMovieId(ctx);
 		verify(ctx).status(404);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionInvalidIdForFindingStars() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("0");
+		movieController.getPeopleByMovieId(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionInvalidIdForFindingStars2() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("-abc");
+		movieController.getPeopleByMovieId(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionInvalidIdForFindingStars3() throws SQLException{
+		when(ctx.pathParam("id")).thenReturn("123456789000");
+		movieController.getPeopleByMovieId(ctx);
+		verify(ctx).status(400);
 	}
 	
 	/**
@@ -244,6 +288,17 @@ class MovieControllerTest {
 	}
 	
 	/**
+	 * Test a 400 status code is returned if invalid year.
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenGetMovieRatingsByInvalidYear4() throws SQLException {
+		when(ctx.pathParam("year")).thenReturn("1234567890000");
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
 	 * Test a 404 status code is returned if no movie ratings are found
 	 * @throws SQLException
 	 */
@@ -264,6 +319,34 @@ class MovieControllerTest {
 		movieController.getAllMovies(ctx);
 		try {
 			verify(movieDAO).getAllMoviesByLimit(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests the getAllMovies, but also specifies a limit on the number of movies
+	 */
+	@Test
+	void testGetAllMoviesByInvalidLimit() {
+		when (ctx.queryParam("limit")).thenReturn("0");
+		movieController.getAllMovies(ctx);
+		try {
+			verify(movieDAO).getAllMoviesByLimit(0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Tests the getAllMovies, but also specifies a limit on the number of movies
+	 */
+	@Test
+	void testGetAllMoviesByInvalidLimit2() {
+		when (ctx.queryParam("limit")).thenReturn("10000000000");
+		movieController.getAllMovies(ctx);
+		try {
+			verify(movieDAO).getAllMovies();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -458,5 +541,44 @@ class MovieControllerTest {
 		when(movieDAO.getMovieRatingsByYearAndVoteLimit(1994, 10000000)).thenReturn(null);
 		movieController.getRatingsByYear(ctx);
 		verify(ctx).status(404);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenGetMovieRatingsByLimitAndVoteLimitByVotes() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("12345678900");
+		when(ctx.queryParam("votes")).thenReturn("10000000");
+		when(ctx.queryParam("limit")).thenReturn("10");
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenGetMovieRatingsByLimitAndVoteLimitByVotes2() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("abc");
+		when(ctx.queryParam("votes")).thenReturn("10000000");
+		when(ctx.queryParam("limit")).thenReturn("10");
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(400);
+	}
+	
+	/**
+	 * Test that the controller returns a 400 status code 
+	 * @throws SQLException
+	 */
+	@Test
+	void testThrows400ExceptionWhenGetMovieRatingsByLimitAndVoteLimitByVotes3() throws SQLException{
+		when(ctx.pathParam("year")).thenReturn("-9");
+		when(ctx.queryParam("votes")).thenReturn("10000000");
+		when(ctx.queryParam("limit")).thenReturn("10");
+		movieController.getRatingsByYear(ctx);
+		verify(ctx).status(400);
 	}
 }

@@ -264,6 +264,9 @@ class MovieDAOTest {
 			List<MovieRating> movies = movieDAO.getMovieRatingsByYearAndLimit(1994, -1);
 			assertEquals(1, movies.size());
 			
+			List<MovieRating> movies4 = movieDAO.getMovieRatingsByYearAndLimit(1994, 2147483647);
+			assertEquals(1, movies4.size());
+			
 			List<MovieRating> movies2 = movieDAO.getMovieRatingsByYearAndLimit(2028, 2);
 			assertEquals(null, movies2);
 			
@@ -311,6 +314,8 @@ class MovieDAOTest {
 		try {
 			List<MovieRating> movies = movieDAO.getMovieRatingsByYearAndVoteLimit(1994, -1);
 			assertEquals(1, movies.size());
+			List<MovieRating> movies2 = movieDAO.getMovieRatingsByYearAndVoteLimit(1994, 2147483647);
+			assertEquals(1, movies2.size());
 		} catch (SQLException e) {
 			fail("SQLException thrown");
 			e.printStackTrace();
@@ -339,6 +344,9 @@ class MovieDAOTest {
 		try {
 			List<MovieRating> movies = movieDAO.getMovieRatingsByYearLimitVoteLimit(1972, -5, 1000000);
 			assertEquals(1, movies.size());
+			
+			List<MovieRating> movies7 = movieDAO.getMovieRatingsByYearLimitVoteLimit(1972, -5, 2147483647);
+			assertEquals(1, movies7.size());
 			
 			List<MovieRating> movies2 = movieDAO.getMovieRatingsByYearLimitVoteLimit(1972, 2, 2000000);
 			assertEquals(null, movies2);

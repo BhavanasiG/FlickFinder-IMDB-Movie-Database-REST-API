@@ -53,14 +53,17 @@ public class MovieController {
 			String limit = ctx.queryParam("limit");
 			
 			if (limit != null) {
-				if (limit.matches("[0-9]+")) {
+				if ((limit.matches("[0-9]+")) && (limit.length()<10)) {
 					ctx.json(movieDAO.getAllMoviesByLimit(Integer.parseInt(limit)));
-				} else {
+					return;
+				}  {
 					ctx.json(movieDAO.getAllMovies());
+					return;
 				}
 			}
-			else {
+			 {
 				ctx.json(movieDAO.getAllMovies());
+				return;
 			}
 			
 		} catch (SQLException e) {
@@ -77,7 +80,7 @@ public class MovieController {
 	 */
 	public void getMovieById(Context ctx) {
 		//System.out.println(ctx.pathParam("id"));
-		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && Integer.parseInt(ctx.pathParam("id"))>=1);
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && ctx.pathParam("id").length()<10 && Integer.parseInt(ctx.pathParam("id"))>=1);
 		//System.out.println(valid);
 		if (!valid) {
 			ctx.status(400);
@@ -106,8 +109,9 @@ public class MovieController {
 	 * @param ctx the Javalin Context
 	 */
 	public void getPeopleByMovieId(Context ctx) {
-		if (!ctx.pathParam("id").matches("[0-9]+")) {
-			ctx.status(404);
+		boolean valid = (ctx.pathParam("id").matches("[0-9]+") && ctx.pathParam("id").length()<10 && Integer.parseInt(ctx.pathParam("id"))>=1);
+		if (!valid) {
+			ctx.status(400);
 			ctx.result("Invalid id");
 			return;
 		}
@@ -136,24 +140,37 @@ public class MovieController {
 	 */
 	public void getRatingsByYear(Context ctx) {
 		//System.out.println("Param: " + ctx.pathParam("year"));
-		boolean validYear = ctx.pathParam("year").matches("[0-9]+") && (Integer.parseInt(ctx.pathParam("year")) > 0);
+		boolean validYear = ((ctx.pathParam("year").matches("[0-9]+")) && (ctx.pathParam("year").length()<10) && (Integer.parseInt(ctx.pathParam("year")) > 0));
 		
-		if(!ctx.pathParam("year").matches("[0-9]+") | validYear == false) {
+		if( validYear == false) {
 			ctx.status(400);
 			ctx.result("Invalid year");
 			return;
 		}
 		
-		else if (ctx.pathParam("year").matches("[0-9]+")) {
+		 if (ctx.pathParam("year").matches("[0-9]+")) {
 			int year = Integer.parseInt(ctx.pathParam("year"));
 			try {
 				String limit = ctx.queryParam("limit");
 				//System.out.println(limit);
+				//System.out.println(limit.length());
 				String votes = ctx.queryParam("votes");
 				//System.out.println(votes);
+				//System.out.println(votes.length());
+				
+//				if (limit.length()> 10 | votes.length()>10) {
+//					List<MovieRating> ratings = (movieDAO.getMovieRatingsByYear(year));
+//					if (ratings == null) {
+//						ctx.status(404);
+//						ctx.result("Movie(s) not found");
+//						return;
+//					}
+//					ctx.json(ratings);
+//					return;
+//				}
 				
 				if (limit != null & votes == null) {
-					if (limit.matches("[0-9]+")) {
+					if (limit.matches("[0-9]+") && limit.length()<10) {
 						List<MovieRating> ratings = movieDAO.getMovieRatingsByYearAndLimit(year, Integer.parseInt(limit));
 						if (ratings == null) {
 							ctx.status(404);
@@ -161,12 +178,20 @@ public class MovieController {
 							return;
 						}
 						ctx.json(ratings);
-					} else {
-						ctx.json(movieDAO.getMovieRatingsByYear(year));
+						return;
+					}  {
+						List<MovieRating> ratings = (movieDAO.getMovieRatingsByYear(year));
+						if (ratings == null) {
+							ctx.status(404);
+							ctx.result("Movie(s) not found");
+							return;
+						}
+						ctx.json(ratings);
+						return;
 					}
 					
-				} else if (votes != null & limit == null) {
-					if (votes.matches("[0-9]+")) {
+				}  if (votes != null & limit == null) {
+					if (votes.matches("[0-9]+")&& votes.length()<10) {
 						List<MovieRating> ratings = movieDAO.getMovieRatingsByYearAndVoteLimit(year, Integer.parseInt(votes));
 						if (ratings == null) {
 							ctx.status(404);
@@ -174,13 +199,21 @@ public class MovieController {
 							return;
 						}
 						ctx.json(ratings);
-					} else {
-						ctx.json(movieDAO.getMovieRatingsByYear(year));
+						return;
+					}  {
+						List<MovieRating> ratings = (movieDAO.getMovieRatingsByYear(year));
+						if (ratings == null) {
+							ctx.status(404);
+							ctx.result("Movie(s) not found");
+							return;
+						}
+						ctx.json(ratings);
+						return;
 					}
 					
-				} else if (votes != null & limit != null){ // to check both the url has to be in the form of /movies/ratings/{year}?query1=[int]&query2=[int]
+				}  if (votes != null & limit != null){ // to check both the url has to be in the form of /movies/ratings/{year}?query1=[int]&query2=[int]
 					//System.out.println("limit: " + limit + "votes: " + votes);
-					if (votes.matches("[0-9]+") && limit.matches("[0-9]+")) {
+					if ((votes.matches("[0-9]+")) && (votes.length()<10) &&(limit.matches("[0-9]+")) && (limit.length()<10)) {
 						//System.out.println("limit: " + limit + "votes: " + votes);
 						List<MovieRating> ratings = movieDAO.getMovieRatingsByYearLimitVoteLimit(year, Integer.parseInt(limit), Integer.parseInt(votes));
 						if (ratings == null) {
@@ -189,7 +222,8 @@ public class MovieController {
 							return;
 						}
 						ctx.json(ratings);
-					} else if (votes.matches("[0-9]+") && !limit.matches("[0-9]+")) {
+						return;
+					}  if (votes.matches("[0-9]+")&& votes.length()<10 && !limit.matches("[0-9]+")) {
 						List<MovieRating> ratings = movieDAO.getMovieRatingsByYearAndVoteLimit(year, Integer.parseInt(votes));
 						if (ratings == null) {
 							ctx.status(404);
@@ -197,7 +231,8 @@ public class MovieController {
 							return;
 						}
 						ctx.json(ratings);
-					} else if (!votes.matches("[0-9]+") && limit.matches("[0-9]+")) {
+						return;
+					} if (!votes.matches("[0-9]+") && limit.matches("[0-9]+") && limit.length()<10) {
 						
 						List<MovieRating> ratings = movieDAO.getMovieRatingsByYearAndLimit(year, Integer.parseInt(limit));
 						if (ratings == null) {
@@ -206,10 +241,18 @@ public class MovieController {
 							return;
 						}
 						ctx.json(ratings);
-					}else {
-						ctx.json(movieDAO.getMovieRatingsByYear(year));
+						return;
+					} {
+						List<MovieRating> ratings = (movieDAO.getMovieRatingsByYear(year));
+						if (ratings == null) {
+							ctx.status(404);
+							ctx.result("Movie(s) not found");
+							return;
+						}
+						ctx.json(ratings);
+						return;
 					}
-				} else {
+				}  {
 					List<MovieRating> ratings = (movieDAO.getMovieRatingsByYear(year));
 					if (ratings == null) {
 						ctx.status(404);
@@ -217,6 +260,7 @@ public class MovieController {
 						return;
 					}
 					ctx.json(ratings);
+					return;
 				}
 			} catch(SQLException e) {
 				ctx.status(500);
