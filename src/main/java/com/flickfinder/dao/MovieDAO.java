@@ -118,7 +118,7 @@ public class MovieDAO {
 	public List<MovieRating> getMovieRatingsByYear(int year) throws SQLException{
 		List<MovieRating> movies = new ArrayList<>();
 		
-		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT 50";
+		String statement = "select id, title, rating, votes, year from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT 50";
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
 		ResultSet rs = ps.executeQuery();
@@ -180,7 +180,7 @@ public class MovieDAO {
 			limit = 50;
 		}
 		
-		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT " + limit;
+		String statement = "select id, title, rating, votes, year from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>1000 ORDER BY ratings.rating DESC LIMIT " + limit;
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
 		ResultSet rs = ps.executeQuery();
@@ -213,7 +213,7 @@ public class MovieDAO {
 			votes = 1000;
 		}
 		
-		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT 50";
+		String statement = "select id, title, rating, votes, year from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT 50";
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
 		ResultSet rs = ps.executeQuery();
@@ -255,7 +255,7 @@ public class MovieDAO {
 			votes = 1000;
 		}
 		
-		String statement = "select * from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT " + limit;
+		String statement = "select id, title, rating, votes, year from movies inner join ratings on movies.id=ratings.movie_id where year = ? AND votes>" + votes +" ORDER BY ratings.rating DESC LIMIT " + limit;
 		PreparedStatement ps = connection.prepareStatement(statement);
 		ps.setInt(1, year);
 		ResultSet rs = ps.executeQuery();
